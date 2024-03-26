@@ -23,7 +23,8 @@
 #include "usb_device.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_hid.h"
+#include "usbd_cdc.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
 #include "main.h"
@@ -39,13 +40,13 @@ extern PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-static void GetPointerData(uint8_t *pbuf);
+
 /* USER CODE END PFP */
 
 extern void Error_Handler(void);
 /* USB Device Core handle declaration. */
 USBD_HandleTypeDef hUsbDeviceFS;
-extern USBD_DescriptorsTypeDef HID_Desc;
+extern USBD_DescriptorsTypeDef CDC_Desc;
 
 /*
  * -- Insert your variables declaration here --
@@ -59,77 +60,6 @@ extern USBD_DescriptorsTypeDef HID_Desc;
  */
 /* USER CODE BEGIN 1 */
 
-/**
-  * @brief  Gets Pointer Data.
-  * @param  pbuf: Pointer to report
-  * @retval None
-  */
-void GetPointerData(uint8_t * pbuf)
-{
-  static int8_t cnt = 0;
-  int8_t x = 0, y = 0;
-
-  if (cnt++ > 0)
-  {
-    x = CURSOR_STEP;
-  }
-  else
-  {
-    x = -CURSOR_STEP;
-  }
-  pbuf[0] = 0;
-  pbuf[1] = x;
-  pbuf[2] = y;
-  pbuf[3] = 0;
-}
-
-/**
-  * @brief  GPIO EXTI Falling Callback function
-  *         Handle remote-wakeup through key button
-  * @param  GPIO_Pin
-  * @retval None
-  */
-void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
-{
-  if (GPIO_Pin == BUTTON_KEY1_PIN)
-  {
-    if ((((USBD_HandleTypeDef *) hpcd_USB_DRD_FS.pData)->dev_remote_wakeup == 1) &&
-        (((USBD_HandleTypeDef *) hpcd_USB_DRD_FS.pData)->dev_state ==
-         USBD_STATE_SUSPENDED))
-    {
-      if ((&hpcd_USB_DRD_FS)->Init.low_power_enable)
-      {
-        HAL_ResumeTick();
-      }
-      /* Activate Remote wakeup */
-      HAL_PCD_ActivateRemoteWakeup((&hpcd_USB_DRD_FS));
-
-      /* Remote wakeup delay */
-      HAL_Delay(10);
-
-      /* Disable Remote wakeup */
-      HAL_PCD_DeActivateRemoteWakeup((&hpcd_USB_DRD_FS));
-
-      /* change state to configured */
-      ((USBD_HandleTypeDef *) hpcd_USB_DRD_FS.pData)->dev_state = USBD_STATE_CONFIGURED;
-
-      /* Change remote_wakeup feature to 0 */
-      ((USBD_HandleTypeDef *) hpcd_USB_DRD_FS.pData)->dev_remote_wakeup = 0;
-      remotewakeupon = 1;
-    }
-    else if (((USBD_HandleTypeDef *) hpcd_USB_DRD_FS.pData)->dev_state ==
-         USBD_STATE_CONFIGURED)
-    {
-      GetPointerData(HID_Buffer);
-      USBD_HID_SendReport(&hUsbDeviceFS, HID_Buffer, 4);
-    }
-    else
-    {
-      /* ... */
-    }
-  }
-}
-
 /* USER CODE END 1 */
 
 /**
@@ -142,19 +72,27 @@ void MX_USB_Device_Init(void)
   /* USER CODE END USB_Device_Init_PreTreatment */
 
   /* Init Device Library, add supported class and start the library. */
-  if (USBD_Init(&hUsbDeviceFS, &HID_Desc, 0) != USBD_OK) {
+  if (USBD_Init(&hUsbDeviceFS, &CDC_Desc, 0) != USBD_OK) {
     Error_Handler();
   }
-  if (USBD_RegisterClass(&hUsbDeviceFS, &USBD_HID) != USBD_OK) {
+  if (USBD_RegisterClass(&hUsbDeviceFS, USBD_CDC_CLASS) != USBD_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN USB_Device_Init_PostTreatment */
-
+//  if (USBD_Init(&hUsbDeviceFS, &CDC_Desc, 0) != USBD_OK) {
+//    Error_Handler();
+//  }
+//  if (USBD_RegisterClass(&hUsbDeviceFS, USBD_CDC_CLASS) != USBD_OK) {
+//    Error_Handler();
+//  }
+//    if (USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_CDC_fops) != USBD_OK) {
+//    Error_Handler();
+//  }
   /* USER CODE END USB_Device_Init_PostTreatment */
-  
 
 
-  HAL_PWREx_EnableVddUSB();
+
+//  HAL_PWREx_EnableVddUSB();
 
 
 

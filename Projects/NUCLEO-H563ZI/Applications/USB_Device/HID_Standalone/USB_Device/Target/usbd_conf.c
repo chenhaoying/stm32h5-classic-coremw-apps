@@ -24,7 +24,7 @@
 #include "usbd_def.h"
 #include "usbd_core.h"
 
-#include "usbd_hid.h"
+#include "usbd_cdc.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -75,7 +75,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef* pcdHandle)
 {
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  
+
   if(pcdHandle->Instance==USB_DRD_FS)
   {
   /* USER CODE BEGIN USB_DRD_FS_MspInit 0 */
@@ -117,10 +117,10 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef* pcdHandle)
 
   /* Peripheral clock disable */
   __HAL_RCC_USB_CLK_DISABLE();
-  
+
   /* Peripheral interrupt Deinit*/
   HAL_NVIC_DisableIRQ(USB_DRD_FS_IRQn);
-  
+
   /* USER CODE BEGIN USB_MspDeInit 1 */
 
   /* USER CODE END USB_MspDeInit 1 */
@@ -181,7 +181,7 @@ void HAL_PCD_DataInStageCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
 {
   /* USER CODE BEGIN HAL_PCD_DataInStageCallback_PreTreatment */
 
-  /* USER CODE END HAL_PCD_DataInStageCallback_PreTreatment */  
+  /* USER CODE END HAL_PCD_DataInStageCallback_PreTreatment */
   USBD_LL_DataInStage((USBD_HandleTypeDef*)hpcd->pData, epnum, hpcd->IN_ep[epnum].xfer_buff);
   /* USER CODE BEGIN HAL_PCD_DataInStageCallback_PostTreatment  */
 
@@ -230,7 +230,7 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   }
     /* Set Speed. */
   USBD_LL_SetSpeed((USBD_HandleTypeDef*)hpcd->pData, speed);
-  
+
   /* Reset Device */
   USBD_LL_Reset((USBD_HandleTypeDef*)hpcd->pData);
   /* USER CODE BEGIN HAL_PCD_ResetCallback_PostTreatment */
@@ -402,7 +402,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   hpcd_USB_DRD_FS.pData = pdev;
   /* Link the driver to the stack. */
   pdev->pData = &hpcd_USB_DRD_FS;
-  
+
   hpcd_USB_DRD_FS.Instance = USB_DRD_FS;
   hpcd_USB_DRD_FS.Init.dev_endpoints = 8;
   hpcd_USB_DRD_FS.Init.Host_channels = 8;
@@ -441,11 +441,13 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   /* USER CODE END RegisterCallBackSecondPart */
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
   /* USER CODE BEGIN EndPoint_Configuration */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x00, PCD_SNG_BUF, 0x0C);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x80, PCD_SNG_BUF, 0x4C);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x00, PCD_SNG_BUF, 0x20);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x80, PCD_SNG_BUF, 0x40);
   /* USER CODE END EndPoint_Configuration */
   /* USER CODE BEGIN EndPoint_Configuration_HID */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, HID_EPIN_ADDR, PCD_SNG_BUF, 0x8C);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, CDC_IN_EP, PCD_SNG_BUF, 0x60);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, CDC_OUT_EP, PCD_SNG_BUF, 0x80);
+  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, CDC_CMD_EP, PCD_SNG_BUF, 0x100);
   /* USER CODE END EndPoint_Configuration_HID */
   return USBD_OK;
 }
@@ -699,7 +701,7 @@ void USBD_LL_Delay(uint32_t Delay)
   */
 void *USBD_static_malloc(uint32_t size)
 {
-  static uint32_t mem[(sizeof(USBD_HID_HandleTypeDef)/4)+1];/* On 32-bit boundary */
+  static uint32_t mem[(sizeof(USBD_CDC_HandleTypeDef)/4)+1];/* On 32-bit boundary */
   return mem;
 }
 

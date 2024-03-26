@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BuildDb>
+    <Tool>
+        <Name>linker</Name>
+        <Parent>
+            <Path>D:\codeGIT\H563_USBD\stm32h5-classic-coremw-apps\Projects\NUCLEO-H563ZI\Applications\USB_Device\HID_Standalone\EWARM\HID_Standalone\Exe\HID_Standalone.out</Path>
+            <Output>
+                <Path>D:\codeGIT\H563_USBD\stm32h5-classic-coremw-apps\Projects\NUCLEO-H563ZI\Applications\USB_Device\HID_Standalone\EWARM\HID_Standalone\List\HID_Standalone.map</Path>
+            </Output>
+        </Parent>
+    </Tool>
+</BuildDb>

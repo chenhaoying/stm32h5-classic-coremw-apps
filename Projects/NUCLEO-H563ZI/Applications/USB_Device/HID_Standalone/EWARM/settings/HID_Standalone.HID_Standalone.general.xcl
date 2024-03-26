@@ -1,0 +1,19 @@
+"D:\software\IAR Systems\Embedded Workbench 9.2\arm\bin\armPROC.dll" 
+
+"D:\software\IAR Systems\Embedded Workbench 9.2\arm\bin\armJLINK.dll" 
+
+"D:\codeGIT\H563_USBD\stm32h5-classic-coremw-apps\Projects\NUCLEO-H563ZI\Applications\USB_Device\HID_Standalone\EWARM\HID_Standalone\Exe\HID_Standalone.out" 
+
+--plugin="D:\software\IAR Systems\Embedded Workbench 9.2\arm\bin\armbat.dll" 
+
+--device_macro="D:\software\IAR Systems\Embedded Workbench 9.2\arm/config/debugger/ST/STM32H5xx.dmac" 
+
+--device_macro="D:\software\IAR Systems\Embedded Workbench 9.2\arm/config/debugger/ST/STM32H5xx_DBG.dmac" 
+
+--device_macro="D:\software\IAR Systems\Embedded Workbench 9.2\arm/config/debugger/ST/STM32H5xx_TRACE.dmac" 
+
+--flash_loader="D:\software\IAR Systems\Embedded Workbench 9.2\arm/config/flashloader/ST/FlashSTM32H5xxxG.board" 
+
+
+
+

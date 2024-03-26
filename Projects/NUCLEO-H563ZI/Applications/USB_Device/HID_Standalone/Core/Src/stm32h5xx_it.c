@@ -198,7 +198,7 @@ void GPDMA1_Channel1_IRQHandler(void)
 void UCPD1_IRQHandler(void)
 {
   /* USER CODE BEGIN USB_UCPD1_2_IRQn 0 */
-  USBPD_PORT0_IRQHandler();
+//  USBPD_PORT0_IRQHandler();
   /* USER CODE END USB_UCPD1_2_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_DRD_FS);
   /* USER CODE BEGIN USB_UCPD1_2_IRQn 1 */
@@ -228,6 +228,7 @@ void EXTI13_IRQHandler(void)
 {
   HAL_GPIO_EXTI_IRQHandler(BUTTON_USER_PIN);
 }
+
 
 /* USER CODE BEGIN 1 */
 
