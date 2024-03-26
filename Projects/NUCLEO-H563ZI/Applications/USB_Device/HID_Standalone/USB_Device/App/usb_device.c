@@ -91,9 +91,8 @@ void MX_USB_Device_Init(void)
   /* USER CODE END USB_Device_Init_PostTreatment */
 
 
-
-//  HAL_PWREx_EnableVddUSB();
-
+  HAL_PWREx_EnableVddUSB();
+  USBD_Start(&hUsbDeviceFS);
 
 
 }
